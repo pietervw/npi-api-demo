@@ -1,0 +1,163 @@
+name: Validate SDK Examples
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node:
+    name: Node.js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.19"
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: node
+
+      - name: Health check
+        run: node health.js
+        working-directory: node
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+      - name: Single NPI Lookup
+        run: node single-lookup.js
+        working-directory: node
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+      - name: Provider Search
+        run: node search.js
+        working-directory: node
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+      - name: Bulk NPI Lookup
+        run: node bulk-lookup.js
+        working-directory: node
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+  typescript:
+    name: TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.19"
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: typescript
+
+      - name: Health check
+        run: npx tsx health.ts
+        working-directory: typescript
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+      - name: Single NPI Lookup
+        run: npx tsx single-lookup.ts
+        working-directory: typescript
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+      - name: Provider Search
+        run: npx tsx search.ts
+        working-directory: typescript
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+      - name: Bulk NPI Lookup
+        run: npx tsx bulk-lookup.ts
+        working-directory: typescript
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+  python:
+    name: Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        working-directory: python
+
+      - name: Health check
+        run: python health.py
+        working-directory: python
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+      - name: Single NPI Lookup
+        run: python single_lookup.py
+        working-directory: python
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+      - name: Provider Search
+        run: python search.py
+        working-directory: python
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+      - name: Bulk NPI Lookup
+        run: python bulk_lookup.py
+        working-directory: python
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}
+
+  csharp:
+    name: C# / .NET
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: csharp
+
+      - name: Build
+        run: dotnet build --no-restore
+        working-directory: csharp
+
+      - name: Run all examples
+        run: dotnet run --no-build
+        working-directory: csharp
+        env:
+          NPI_API_BASE_URL: https://healthproviderapi.com
+          NPI_API_KEY: ${{ secrets.DEMO_API_KEY }}

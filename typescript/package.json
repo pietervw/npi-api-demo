@@ -1,0 +1,17 @@
+{
+  "name": "npi-api-demo-typescript",
+  "version": "1.0.0",
+  "description": "Health Provider NPI API — TypeScript examples",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "health": "tsx health.ts",
+    "single-lookup": "tsx single-lookup.ts",
+    "search": "tsx search.ts",
+    "bulk-lookup": "tsx bulk-lookup.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "tsx": "^4.19.0"
+  }
+}

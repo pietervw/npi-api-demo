@@ -1,0 +1,16 @@
+{
+  "name": "npi-api-demo-node",
+  "version": "1.0.0",
+  "description": "Health Provider NPI API — Node.js examples",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "scripts": {
+    "health": "node health.js",
+    "single-lookup": "node single-lookup.js",
+    "search": "node search.js",
+    "bulk-lookup": "node bulk-lookup.js"
+  }
+}
