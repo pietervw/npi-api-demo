@@ -38,8 +38,7 @@ NPI numbers are unique 10-digit identifiers required by HIPAA for all US healthc
 - ✅ **Provider Directory Search** — `GET /api/v1/providers/search` — find providers by name, organization, city, state, or specialty
 - ✅ **Bulk NPI Lookup** — `POST /api/v1/npi/bulk` — batch lookup up to 50 NPIs per request
 - ✅ **Health Check** — `GET /api/health` — verify API availability (no auth required)
-- ✅ **Error handling** — structured errors for 400, 401, 403, 404, 429, 500, 502 responses
-- ✅ **Rate-limit awareness** — reads `X-RateLimit-*` headers and retries with backoff
+- ✅ **Basic error handling** — examples check HTTP status and surface API error details
 - ✅ **Real NPI numbers** — all examples use real, publicly available NPI numbers from the NPPES registry
 - ✅ **Enrichment support** — request `completeness`, `quality_score`, and `freshness` enrichment on Growth and Pro plans
 
@@ -50,7 +49,7 @@ NPI numbers are unique 10-digit identifiers required by HIPAA for all US healthc
 | **Node.js** | 18+ | Native `fetch` | [`node/single-lookup.js`](node/single-lookup.js) |
 | **TypeScript** | 5+ | Native `fetch` | [`typescript/single-lookup.ts`](typescript/single-lookup.ts) |
 | **Python** | 3.10+ | `httpx` | [`python/single_lookup.py`](python/single_lookup.py) |
-| **C# / .NET** | 10+ | `HttpClient` | [`csharp/Program.cs`](csharp/Program.cs) |
+| **C# / .NET** | 8+ | `HttpClient` | [`csharp/Program.cs`](csharp/Program.cs) |
 
 ## Quick Start
 
@@ -65,23 +64,18 @@ git clone https://github.com/pietervw/npi-api-demo.git
 cd npi-api-demo
 ```
 
-### 3. Configure environment
+### 3. Configure environment variables
 
-Copy `.env.example` to `.env` and set your API key:
+All demos use these variables:
 
-```bash
-# Linux / macOS
-cp .env.example .env
-
-# Windows (PowerShell)
-Copy-Item .env.example .env
-```
-
-Edit `.env`:
 ```
 NPI_API_KEY=your_api_key_here
 NPI_API_BASE_URL=https://healthproviderapi.com
 ```
+
+Per-language loading behavior:
+- **Node.js / TypeScript**: these samples import `dotenv/config` and read `.env` from the current working directory.
+- **Python / C#**: these samples read OS environment variables directly and do not auto-load a `.env` file.
 
 ---
 
@@ -89,6 +83,12 @@ NPI_API_BASE_URL=https://healthproviderapi.com
 
 ```bash
 cd node
+# Linux / macOS
+cp ../.env.example .env
+
+# Windows (PowerShell)
+# Copy-Item ..\.env.example .env
+
 npm install
 node single-lookup.js
 node search.js
@@ -100,6 +100,12 @@ node health.js
 
 ```bash
 cd typescript
+# Linux / macOS
+cp ../.env.example .env
+
+# Windows (PowerShell)
+# Copy-Item ..\.env.example .env
+
 npm install
 npx tsx single-lookup.ts
 npx tsx search.ts
@@ -111,6 +117,10 @@ npx tsx health.ts
 
 ```bash
 cd python
+# Linux / macOS
+export NPI_API_KEY=your_api_key_here
+export NPI_API_BASE_URL=https://healthproviderapi.com
+
 pip install -r requirements.txt
 python single_lookup.py
 python search.py
@@ -122,9 +132,30 @@ python health.py
 
 ```bash
 cd csharp
+# Linux / macOS
+export NPI_API_KEY=your_api_key_here
+export NPI_API_BASE_URL=https://healthproviderapi.com
+
 dotnet restore
 dotnet run
 ```
+
+Windows PowerShell equivalents for Python and C#:
+
+```powershell
+$env:NPI_API_KEY="your_api_key_here"
+$env:NPI_API_BASE_URL="https://healthproviderapi.com"
+```
+
+## Troubleshooting First Run
+
+- **`NPI_API_KEY is required` or `KeyError: 'NPI_API_KEY'`**: set `NPI_API_KEY` in your shell (Python/C#) or create a `.env` in `node/` or `typescript/`.
+- **Node/TypeScript still show missing key**: confirm you are running from `node/` or `typescript/` where `.env` exists.
+- **Health endpoint works but other calls fail with 401/403**: your API key is missing, invalid, or on a restricted plan.
+- **Unexpected host or connection issues**: verify `NPI_API_BASE_URL` is `https://healthproviderapi.com`.
+- **Verify current shell values**:
+  - Linux/macOS: `echo $NPI_API_KEY`
+  - PowerShell: `$env:NPI_API_KEY`
 
 ---
 

@@ -1,10 +1,16 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Web;
 
 var BASE_URL = Environment.GetEnvironmentVariable("NPI_API_BASE_URL") ?? "https://healthproviderapi.com";
-var API_KEY = Environment.GetEnvironmentVariable("NPI_API_KEY") ?? throw new InvalidOperationException("NPI_API_KEY is required");
 var NPI = "1003000126";
 var NPIS = new[] { "1003000126", "1932100864", "1851789159" };
+
+static string RequireApiKey()
+{
+    return Environment.GetEnvironmentVariable("NPI_API_KEY")
+        ?? throw new InvalidOperationException("NPI_API_KEY is required for authenticated endpoints");
+}
 
 // ---------------------------------------------------------------------------
 // Health Check — no auth required
@@ -23,9 +29,10 @@ async Task HealthCheck()
 // ---------------------------------------------------------------------------
 async Task LookupNpi(string npi)
 {
+    var apiKey = RequireApiKey();
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Authorization =
-        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", API_KEY);
+        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
 
     var response = await client.GetAsync($"{BASE_URL}/api/v1/npi/{npi}");
 
@@ -46,13 +53,16 @@ async Task LookupNpi(string npi)
 // ---------------------------------------------------------------------------
 async Task SearchProviders(string lastName, string? state = null, string? city = null, int limit = 10)
 {
+    var apiKey = RequireApiKey();
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Authorization =
-        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", API_KEY);
+        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
 
-    var query = $"last_name={lastName}&limit={limit}";
-    if (state != null) query += $"&state={state}";
-    if (city != null) query += $"&city={city}";
+    var query = HttpUtility.ParseQueryString(string.Empty);
+    query["last_name"] = lastName;
+    query["limit"] = limit.ToString();
+    if (state != null) query["state"] = state;
+    if (city != null) query["city"] = city;
 
     var response = await client.GetAsync($"{BASE_URL}/api/v1/providers/search?{query}");
 
@@ -73,9 +83,10 @@ async Task SearchProviders(string lastName, string? state = null, string? city =
 // ---------------------------------------------------------------------------
 async Task BulkLookup(string[] npis)
 {
+    var apiKey = RequireApiKey();
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Authorization =
-        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", API_KEY);
+        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
 
     var payload = new { npis = npis };
     var json = JsonSerializer.Serialize(payload);

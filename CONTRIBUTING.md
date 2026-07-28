@@ -42,7 +42,7 @@ We welcome contributions! This repo is intentionally simple — the goal is work
 
 **C#**
 - Top-level statements (no class wrappers)
-- Target .NET 10 / C# 14
+- Target .NET 8
 - Use `HttpClient` with `using` disposal
 - Use `System.Text.Json` (not Newtonsoft)
 
