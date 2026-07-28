@@ -1,3 +1,4 @@
+import 'dotenv/config';
 const BASE_URL = process.env.NPI_API_BASE_URL || 'https://healthproviderapi.com';
 
 interface HealthResponse {
@@ -21,3 +22,4 @@ healthCheck()
     console.error(err.message);
     process.exit(1);
   });
+
