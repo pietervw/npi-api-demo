@@ -575,33 +575,33 @@ async Task HealthCheck()
 
 Look up a single healthcare provider by their 10-digit NPI number. Returns normalized provider data including name, credentials, taxonomy classifications, mailing address, practice locations, and enumeration date. Supports optional `enrichment` header for data quality and freshness scores on Growth and Pro plans.
 
-**Learn more →** [API Documentation](https://docs.healthproviderapi.com)
+**Learn more →** [API Documentation](https://healthproviderapi.com/docs)
 
 ### `GET /api/v1/providers/search`
 
 Search the NPPES provider directory by name, organization, city, state, or specialty. At least `last_name` or `organization_name` is required. Results are paginated with `limit` (max 50) and `skip` (max 1000). Each successful search consumes one monthly quota credit.
 
-**Learn more →** [API Documentation](https://docs.healthproviderapi.com)
+**Learn more →** [API Documentation](https://healthproviderapi.com/docs)
 
 ### `POST /api/v1/npi/bulk`
 
 Look up up to 50 NPI numbers in a single batch request. Each item in the response has its own `status` field (`found`, `not_found`, `upstream_error`, `quota_exceeded`). Duplicates in a single batch are metered independently. Quota is consumed per-item.
 
-**Learn more →** [API Documentation](https://docs.healthproviderapi.com)
+**Learn more →** [API Documentation](https://healthproviderapi.com/docs)
 
 ### `GET /api/health`
 
 Returns the API service health status. No authentication required. Use this to verify the service is available before making authenticated requests.
 
-**Learn more →** [API Documentation](https://docs.healthproviderapi.com)
+**Learn more →** [API Documentation](https://healthproviderapi.com/docs)
 
 ---
 
 ## Resources
 
-- [API Documentation](https://docs.healthproviderapi.com) — Full API reference
+- [API Documentation](https://healthproviderapi.com/docs) — Full API reference
 - [Health Provider NPI API](https://healthproviderapi.com) — Sign up for an API key
-- [Main API Repository](https://github.com/pietervw/NPI-API) — Backend implementation
+- [Main API Repository](https://github.com/pietervw/healthproviderapi-com) — Backend implementation
 - [NPPES Registry](https://npiregistry.cms.hhs.gov/) — Official US government NPI registry
 - [HIPAA NPI Requirement](https://www.cms.gov/Regulations-and-Guidance/HIPAA-Administrative-Simplification/NationalProviderIdentStand) — Learn why NPI numbers are required
 
