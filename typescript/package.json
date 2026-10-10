@@ -11,7 +11,7 @@
     "bulk-lookup": "tsx bulk-lookup.ts"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "tsx": "^4.19.0"
+    "dotenv": "^18.0.6",
+    "tsx": "^4.23.15"
   }
 }
